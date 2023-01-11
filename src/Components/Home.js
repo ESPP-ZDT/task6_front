@@ -33,24 +33,28 @@ export const Home = () => {
     const [MsgBody, setMsgBody] = useState("");
 
 
-    useEffect(() => {
-        const intervalId = setInterval(async () => { readMesssages() }, 5000);
-        return () => clearInterval(intervalId); //This is important
-    }, []);
+    // useEffect(() => {
+    //     const intervalId = setInterval(async () => { readMesssages() }, 5000);
+    //     return () => clearInterval(intervalId); //This is important
+    // }, []);
 
     const loginUser = async (e) => {
         console.log(`loginUser`);
         e.preventDefault();
         LogIn(UserName);
+        setUserName(UserName);
         readMesssages();
     }
 
     const readMesssages = async (e) => {
         try {
             console.log('API refresh: ' + new Date());
-            const response = await axiosClient.post('messages/recipient', { MsgRecipient: UserName });
-            console.log(response);
-            setMessages(Array.from(response.data));
+            console.log("Read Messages: ", UserName);
+            if (UserName) {
+                const response = await axiosClient.post('messages/recipient', { MsgRecipient: UserName });
+                console.log("Response: ", response);
+                setMessages(Array.from(response.data));
+            }
         } catch (error) {
             console.log(error);
             alert(`HttpStatus:${error.response.status} Response text::[${error.response.data.text}]`);
